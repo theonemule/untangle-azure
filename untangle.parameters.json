@@ -1,0 +1,15 @@
+{
+  "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "vmName": {
+      "value": "untangle-ng-vm"
+    },
+    "osDiskVhdUri": {
+      "value": "https://untanglestore.blob.core.windows.net/vhds/untangle-ng.vhd"
+    },
+    "vmSize": {
+      "value": "Standard_A2_v2"
+    }
+  }
+}

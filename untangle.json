@@ -1,0 +1,257 @@
+{
+    "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "dnsLabelPrefix": {
+            "type": "string",
+            "defaultValue": "untangle-ng",
+            "metadata": {
+                "description": "Unique DNS Name for the Public IP used to access the Virtual Machine."
+            }
+        },
+        "vmName": {
+            "type": "string",
+            "defaultValue": "untangle-ng",
+            "metadata": {
+                "description": "Name of the VM"
+            }
+        },
+        "osDiskVhdUri": {
+            "type": "string",
+            "metadata": {
+                "description": "Uri of the existing VHD"
+            }
+        },
+        "vmSize": {
+            "defaultValue": "Standard_A2_v2",
+            "allowedValues": [
+                "Standard_A3",
+                "Standard_A4",
+                "Standard_A6",
+                "Standard_A7",
+                "Standard_A8",
+                "Standard_A9",
+                "Standard_A10",
+                "Standard_A11",
+                "Standard_D2",
+                "Standard_D3",
+                "Standard_D4",
+                "Standard_D11",
+                "Standard_D12",
+                "Standard_D13",
+                "Standard_D14",
+                "Standard_A2_v2",
+                "Standard_A3_v2",
+                "Standard_A4_v2",
+                "Standard_A5_v2",
+                "Standard_A12_v2",
+                "Standard_A13_v2",
+                "Standard_A14_v2",
+                "Standard_A15_v2",
+                "Standard_D2_v2",
+                "Standard_D3_v2",
+                "Standard_D4_v2",
+                "Standard_D5_v2",
+                "Standard_D12_v2",
+                "Standard_D13_v2",
+                "Standard_D14_v2",
+                "Standard_D15_v2"
+            ],
+            "metadata": {
+                "description": "Size of the VM"
+            },
+            "type": "string"
+        }
+    },
+    "variables": {
+        "apiVersion": "2015-06-15",
+        "location": "[resourceGroup().location]",
+        "nic1Name": "nic1",
+        "nic2Name": "nic2",
+        "vnetName": "vnet",
+        "vnetId": "[resourceId('Microsoft.Network/virtualNetworks', variables('vnetName'))]",
+        "addressPrefix": "10.0.0.0/16",
+        "subnet1Name": "Public",
+        "subnet1Id": "[concat(variables('vnetId'), '/subnets/', variables('subnet1Name'))]",
+        "subnet1Prefix": "10.0.1.0/24",
+        "subnet1PrivateAddress": "10.0.1.5",
+        "subnet2Name": "Private",
+        "subnet2Id": "[concat(variables('vnetId'), '/subnets/', variables('subnet2Name'))]",
+        "subnet2Prefix": "10.0.2.0/24",
+        "subnet2PrivateAddress": "10.0.2.5",
+        "publicIPAddressName": "[concat(uniquestring(resourceGroup().id), 'PublicIp')]",
+        "publicIPAddressType": "Dynamic",
+        "publicIPAddressId": "[resourceId('Microsoft.Network/publicIPAddresses', variables('publicIPAddressName'))]",
+        "routeTableName": "routeTable",
+        "routeTableId": "[resourceId('Microsoft.Network/routeTables', variables('routeTableName'))]"
+    },
+    "resources": [
+        {
+            "apiVersion": "2015-06-15",
+            "type": "Microsoft.Network/routeTables",
+            "name": "[variables('routeTableName')]",
+            "location": "[resourceGroup().location]",
+            "tags": {
+                "displayName": "Route Table - Back End"
+            },
+            "properties": {
+                "routes": [
+                    {
+                        "name": "RouteToFrontEnd",
+                        "properties": {
+                            "addressPrefix": "0.0.0.0/0",
+                            "nextHopType": "VirtualAppliance",
+                            "nextHopIpAddress": "[variables('subnet2PrivateAddress')]"
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "type": "Microsoft.Network/virtualNetworks",
+            "apiVersion": "[variables('apiVersion')]",
+            "location": "[resourceGroup().location]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/routeTables', variables('routeTableName'))]"
+            ],
+            "name": "[variables('vnetName')]",
+            "properties": {
+                "addressSpace": {
+                    "addressPrefixes": [
+                        "[variables('addressPrefix')]"
+                    ]
+                },
+                "subnets": [
+                    {
+                        "name": "[variables('subnet1Name')]",
+                        "properties": {
+                            "addressPrefix": "[variables('subnet1Prefix')]"
+                        }
+                    },
+                    {
+                        "name": "[variables('subnet2Name')]",
+                        "properties": {
+                            "addressPrefix": "[variables('subnet2Prefix')]",
+							"routeTable": {
+								"id": "[resourceId('Microsoft.Network/routeTables', variables('routeTableName'))]"
+							}
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "type": "Microsoft.Network/publicIPAddresses",
+            "apiVersion": "[variables('apiVersion')]",
+            "location": "[resourceGroup().location]",
+            "name": "[variables('publicIPAddressName')]",
+            "properties": {
+                "dnsSettings": {
+                    "domainNameLabel": "[parameters('vmName')]"
+                },
+                "idleTimeoutInMinutes": 30,
+                "publicIPAllocationMethod": "[variables('publicIPAddressType')]"
+            }
+        },
+        {
+            "type": "Microsoft.Network/networkInterfaces",
+            "apiVersion": "[variables('apiVersion')]",
+            "dependsOn": [
+                "[variables('vnetId')]",
+                "[variables('publicIPAddressId')]"
+            ],
+            "location": "[resourceGroup().location]",
+            "name": "[variables('nic1Name')]",
+            "properties": {
+				"enableIPForwarding": true,
+                "ipConfigurations": [
+                    {
+                        "name": "ipconfig1",
+                        "properties": {
+                            "privateIPAddress": "[variables('subnet1PrivateAddress')]",
+                            "privateIPAllocationMethod": "Static",
+                            "PublicIpAddress": {
+                                "Id": "[variables('publicIPAddressId')]"
+                            },
+                            "subnet": {
+                                "id": "[variables('subnet1Id')]"
+                            }
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "type": "Microsoft.Network/networkInterfaces",
+            "apiVersion": "[variables('apiVersion')]",
+            "dependsOn": [
+                "[variables('vnetId')]"
+            ],
+            "location": "[resourceGroup().location]",
+            "name": "[variables('nic2Name')]",
+            "properties": {
+				"enableIPForwarding": true,
+                "ipConfigurations": [
+                    {
+                        "name": "ipconfig2",
+                        "properties": {
+                            "privateIPAddress": "[variables('subnet2PrivateAddress')]",
+                            "privateIPAllocationMethod": "Static",
+                            "subnet": {
+                                "id": "[variables('subnet2Id')]"
+                            }
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "type": "Microsoft.Compute/virtualMachines",
+            "apiVersion": "[variables('apiVersion')]",
+            "dependsOn": [
+                "[concat('Microsoft.Network/networkInterfaces/', variables('nic1Name'))]",
+                "[concat('Microsoft.Network/networkInterfaces/', variables('nic2Name'))]"
+            ],
+            "location": "[resourceGroup().location]",
+            "name": "[parameters('vmName')]",
+            "properties": {
+                "hardwareProfile": {
+                    "vmSize": "[parameters('vmSize')]"
+                },
+                "networkProfile": {
+                    "networkInterfaces": [
+                        {
+                            "id": "[resourceId('Microsoft.Network/networkInterfaces', variables('nic1Name'))]",
+                            "properties": {
+                                "primary": true
+                            }
+                        },
+                        {
+                            "id": "[resourceId('Microsoft.Network/networkInterfaces', variables('nic2Name'))]",
+                            "properties": {
+                                "primary": false
+                            }
+                        }
+                    ]
+                },
+                "storageProfile": {
+                    "osDisk": {
+                        "name": "[concat(parameters('vmName'),'-osDisk')]",
+                        "osType": "Linux",
+                        "caching": "ReadWrite",
+                        "vhd": {
+                            "uri": "[parameters('osDiskVhdUri')]"
+                        },
+                        "createOption": "Attach"
+                    }
+                }
+            }
+        }
+    ],
+    "outputs": {
+        "sshCommand": {
+            "type": "string",
+            "value": "[concat('ssh root@', parameters('vmName'), '.', resourceGroup().location, '.cloudapp.azure.com')]"
+        }
+    }
+}
