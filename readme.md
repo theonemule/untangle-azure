@@ -1,7 +1,7 @@
 Untangle on Azure
 ===
 
-Untangle has for a long time been a robust Unified Threat Management (UTM) that has secured thousands of networks globally. It started off principally on physical machines, eventually onto virtual hardware with VM's. With the rise of the cloud now, virtual machines are now being deployed on popular cloud providers like Amazon AWS and Microsoft Azure. Azure in and of itself supports a variety of different operating systems and even lets users bring their own, and Untangle can be one of those.
+[Untangle](http://www.untangle.com) has for a long time been a robust Unified Threat Management (UTM) that has secured thousands of networks globally. It started off principally on physical machines, eventually onto virtual hardware with VM's. With the rise of the cloud now, virtual machines are now being deployed on popular cloud providers like Amazon AWS and Microsoft Azure. Azure in and of itself supports a variety of different operating systems and even lets users bring their own, and Untangle can be one of those.
 
 Untangle on Azure uses pretty much the same architecture that it uses for VM's 	
 
