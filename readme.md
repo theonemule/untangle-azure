@@ -93,7 +93,7 @@ Untangle on Azure uses pretty much the same architecture that it uses for VM's
 
 1. Now that the VHD is deployed, you can deploy the template to Azure with the button below or continue to step 8 and use Powershell. If you use the tempalte on Powershell, skip to step 10.
 
-	<a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Ftheonemule%2Funtangle-azure-template%2Fmaster%2Funtangle.json" target="_blank"><img src="http://azuredeploy.net/deploybutton.png"/></a>
+	<a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Ftheonemule%2Funtangle-azure%2Fmaster%2Funtangle.json" target="_blank"><img src="http://azuredeploy.net/deploybutton.png"/></a>
 
 1. Edit the **untangle.parameters.json** file.
 
