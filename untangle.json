@@ -19,7 +19,7 @@
         "osDiskVhdUri": {
             "type": "string",
             "metadata": {
-                "description": "Uri of the existing VHD"
+                "description": "Uri of the existing VHD for Untangle"
             }
         },
         "vmSize": {
