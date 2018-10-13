@@ -6,7 +6,7 @@ Build an Untangle VM in VirtualBox
 This process takes about 30-45 minutes to complete depending on your setup. To create a VM on VirtualBox, you'll need to have [VirtualBox](https://www.virtualbox.org/wiki/Downloads) installed on your computer and a [ISO of Untangle 64-bit downloaded](https://www.untangle.com/get-untangle/) from Untangle. 
 
 
-####Configure VirtualBox
+#### Configure VirtualBox
 
 1. Launch VirtualBox and click "New".
 
@@ -46,7 +46,7 @@ This process takes about 30-45 minutes to complete depending on your setup. To c
 
 1. Once these settings are set, start the VM and install Untangle as normal.
 
-####Configure Untangle
+#### Configure Untangle
 
 1. After Untangle boots for the first time, the setup wizard will run.
 
