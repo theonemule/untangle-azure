@@ -13,7 +13,7 @@ Untangle on Azure uses pretty much the same architecture that it uses for VM's
 
 * **Powershell Azure Modules** -- You'll also need the [Azure Modules for Powershell](https://docs.microsoft.com/en-us/powershell/azureps-cmdlets-docs/) to run the commandlets referenced in this guide.
 
-* **VHD Image** -- Before provisioning Untangle on Azure, the Untangle Virtual Hard Drive (VHD) needs to [be created](./create-untangle-vm.md) or it can be [downloaded from here](http://bit.ly/2jRvOoY).
+* **VHD Image** -- Before provisioning Untangle on Azure, the Untangle Virtual Hard Drive (VHD) needs to [be created](./create-untangle-vm.md).
 
 * **Putty** -- If you're using Windows, you'll [need Putty to connect](http://www.chiark.greenend.org.uk/~sgtatham/putty/download.html) to Untangle remotely.
 
