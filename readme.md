@@ -1,3 +1,11 @@
+#Deprecated#
+
+Untangle is now in the Azure Marketplace.
+
+https://support.untangle.com/hc/en-us/articles/360014955873-How-to-deploy-NG-Firewall-in-Microsoft-Azure?mobile_site=true
+
+
+
 Untangle on Azure
 ===
 
